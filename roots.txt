@@ -3,7 +3,7 @@
 3;Li;lith
 4;Be;bery
 5;B;bor
-6;C;uhli
+6;C;uhel
 7;N;dus
 8;O;kys
 9;F;flur
