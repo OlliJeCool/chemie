@@ -1,13 +1,10 @@
-from operator import contains
 import re
-from unicodedata import name
 
 def run():
-    proceed = True
     bases = LoadOthers()
     roots = LoadRoots()
     endings = LoadEndings()
-    while proceed:
+    while True:
         output = ""
         _input = input("Enter a short or a full name:  ")
         if len(_input) <= 6:
@@ -76,23 +73,23 @@ def run():
             tempshort = ""
             temp = _input.split()
             for base in bases:
-                if base["iname"].lower() == _input[0].lower():
+                if base["iname"].lower() == temp[0].lower():
                     tempnum = int(abs(base["enum"]))
                     tempshort = base["short"]
                     break
             for root in roots:
-                if _input[1].lower().__contains__(root["root"].lower()):
+                if temp[1].lower().__contains__(root["root"].lower()):
                     output += root["short"]
                     break
-            for i in (0, len(endings)-1):
-                if _input[1].lower().__contains__(endings[i]):
+            for i in range(0, len(endings)-1):
+                if temp[1].lower().__contains__(endings[i]):
                     tempending = i+1
                     break
+            finalending = ((tempending*tempnum)/tempending)
+            finalnum = ((tempending*tempnum)/tempnum)
+            output += str(int(finalending))+tempshort+str(int(finalnum))
+            print(output)
             
-
-
-
-
 
 def LoadRoots():
     elements = []
