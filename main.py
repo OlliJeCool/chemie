@@ -1,6 +1,6 @@
+from operator import contains
 import re
-
-
+from unicodedata import name
 
 def run():
     proceed = True
@@ -9,7 +9,7 @@ def run():
     endings = LoadEndings()
     while proceed:
         output = ""
-        _input = input("Enter a short or a full name")
+        _input = input("Enter a short or a full name:  ")
         if len(_input) <= 6:
             count = []
             temp = re.split('([A-Z0-9])', _input)
@@ -46,6 +46,7 @@ def run():
                     for root in roots:
                         if root["short"] == inputlist[0]:
                             output += root["root"]
+                            break
                     output += endings[abs(evalue)-1]
                     print(output)
                 if inputlist[1].isnumeric():
@@ -70,7 +71,26 @@ def run():
                 output += endings[int(abs(evalue/int(inputlist[1])))-1]
                 print(output)
         if len(_input) > 6:
+            tempending = 0
+            tempnum = 0
+            tempshort = ""
             temp = _input.split()
+            for base in bases:
+                if base["iname"].lower() == _input[0].lower():
+                    tempnum = int(abs(base["enum"]))
+                    tempshort = base["short"]
+                    break
+            for root in roots:
+                if _input[1].lower().__contains__(root["root"].lower()):
+                    output += root["short"]
+                    break
+            for i in (0, len(endings)-1):
+                if _input[1].lower().__contains__(endings[i]):
+                    tempending = i+1
+                    break
+            
+
+
 
 
 
