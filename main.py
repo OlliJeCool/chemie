@@ -1,72 +1,15 @@
 import re
 
-def run():
+def main():
     bases = LoadOthers()
     roots = LoadRoots()
     endings = LoadEndings()
     while True:
         output = ""
         _input = input("Enter a short or a full name:  ")
-        if len(_input) <= 6:
-            count = []
-            temp = re.split('([A-Z0-9])', _input)
-            inputlist = list(filter(None, temp))
-            for i in range(0, len(inputlist)):
-                if inputlist[i].islower():
-                        inputlist[i-1] = inputlist[i-1]+inputlist[i]
-                        if i > 1:
-                            count.append(i-1)
-                        else:
-                            count.append(i)
-            for value in count:
-                inputlist.pop(value)
-
-            evalue = 0;
-
-            if len(inputlist) == 2: 
-                for base in bases:
-                    if base["short"] == inputlist[1]:
-                        output += base["iname"]+" "
-                        evalue = base["enum"]
-                for root in roots:
-                    if root["short"] == inputlist[0]:
-                        output += root["root"]
-                output += endings[abs(evalue)-1]
-                print(output)
-
-            if len(inputlist) == 3:
-                if inputlist[2].isnumeric():
-                    for base in bases:
-                        if base["short"] == inputlist[1]:
-                            output += base["iname"]+" "
-                            evalue = base["enum"]*int(inputlist[2])
-                    for root in roots:
-                        if root["short"] == inputlist[0]:
-                            output += root["root"]
-                            break
-                    output += endings[abs(evalue)-1]
-                    print(output)
-                if inputlist[1].isnumeric():
-                    for base in bases:
-                        if base["short"] == inputlist[2]:
-                            output += base["iname"]+" "
-                            evalue = base["enum"]
-                    for root in roots:
-                        if root["short"] == inputlist[0]:
-                            output += root["root"]
-                    output += endings[int(abs((evalue))/int(inputlist[1]))-1]
-                    print(output)
-
-            if len(inputlist) == 4:
-                for base in bases:
-                    if base["short"] == inputlist[2]:
-                        output += base["iname"]+" "
-                        evalue = base["enum"]*int(inputlist[3])
-                for root in roots:
-                    if root["short"] == inputlist[0]:
-                        output += root["root"]
-                output += endings[int(abs(evalue/int(inputlist[1])))-1]
-                print(output)
+        if len(_input) <= 7:
+            test(_input, bases, roots, endings)
+            print(GetFormula(_input))
         if len(_input) > 6:
             tempending = 0
             tempnum = 0
@@ -80,16 +23,16 @@ def run():
             for root in roots:
                 if temp[1].lower().__contains__(root["root"].lower()):
                     output += root["short"]
-                    break
+                    temp[1] = temp[1].replace(root["root"].lower(), "")
             for i in range(0, len(endings)-1):
-                if temp[1].lower().__contains__(endings[i]):
+                if temp[1].lower() == endings[i]:
                     tempending = i+1
                     break
             finalending = ((tempending*tempnum)/tempending)
             finalnum = ((tempending*tempnum)/tempnum)
             output += str(int(finalending))+tempshort+str(int(finalnum))
-            print(output)
-            
+            print(output)       
+
 
 def LoadRoots():
     elements = []
@@ -116,5 +59,88 @@ def LoadEndings():
     endings = temp.split(";")
     return endings
 
+def loadRegex():
+    regex = []
+    with open("./regex.txt", "r", encoding="utf-8") as t:
+        for line in t:
+            tempt = line.split(";")
+            regex.append({"num" : tempt[0], "reg" : tempt[1]})
+    return regex
 
-run()
+def GetFormula(_input):
+    count = []
+    temp = re.split('([A-Z0-9])', _input)
+    inputlist = list(filter(None, temp))
+    for i in range(0, len(inputlist)):
+        if inputlist[i].islower():
+            inputlist[i-1] = inputlist[i-1]+inputlist[i]
+            if len(count) > 0:
+                count.append(i-1)
+            else:
+                count.append(i)
+    for value in count:
+        inputlist.pop(value)
+    return inputlist
+
+def test(_input, bases, roots, endings):
+    for reg in loadRegex():
+        if re.match(reg["reg"], _input):
+            temp = GetFormula(_input)
+            nums = []
+            if reg["num"] != 1:
+                evalue = 0
+                output = ""
+                if len(temp) == 4:
+                    if temp[1].isnumeric() and temp[3].isnumeric():
+                        nums.insert(0,int(temp[1]))
+                        nums.insert(1,int(temp[3]))
+                else:
+                    if len(temp) == 2:
+                        nums.insert(0,1)
+                        nums.insert(1,1)
+                    elif temp[1].isnumeric() and len(temp) == 3:
+                        nums.insert(0,int(temp[1])) 
+                        nums.insert(1,1)
+                    elif temp[2].isnumeric() and len(temp) == 3:
+                        nums.insert(0,1)
+                        nums.insert(1,int(temp[2]))
+            else:
+                if temp[1].isnumeric() and temp[3].isnumeric() and temp[5].isnumeric():
+                    nums.insert(0,int(temp[1]))
+                    nums.insert(1,int(temp[3]))
+                    nums.insert(2,int(temp[5]))
+                elif temp[1].isnumeric and temp[3].isnumeric() and reg["num"] == 1:
+                    nums.insert(0,int(temp[1]))
+                    nums.insert(1,int(temp[3]))
+                    nums.insert(2,1)
+                elif temp[1].isnumeric() and temp[5].isnumeric() and reg["num"] == 1:
+                    nums.insert(0,int(temp[1]))
+                    nums.insert(1,1)
+                    nums.insert(2,int(temp[5]))
+                elif temp[3].isnumeric() and temp[5].isnumeric() and reg["num"] == 1:
+                    nums.insert(0,1)
+                    nums.insert(1,int(temp[3]))
+                    nums.insert(2,int(temp[5]))
+            for base in bases:
+                if len(temp) != 2:
+                    if temp[2] == base["short"]:
+                        output += base["iname"]+" "
+                        evalue = int(base["enum"])*nums[1]
+                        break
+                    elif temp[1] == base["short"]:
+                        output += base["iname"]+" "
+                        evalue = int(base["enum"])*nums[1]
+                        break
+                else:
+                    if temp[1] == base["short"]:
+                        output += base["iname"]+" "
+                        evalue = int(base["enum"])*nums[1]
+                        break
+            for root in roots:
+                if temp[0] == root["short"]:
+                    output += root["root"]
+                    break
+            output+= endings[int(abs((evalue))/nums[0])-1]
+            print(output)
+
+main()

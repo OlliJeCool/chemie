@@ -6,4 +6,4 @@ O;Kyslík;-2;Oxid
 S;Síra;-2;Sirnan
 Se;Selen;-2;Selenid
 N;Dusík;-3;Dusičnan
-OH;Hydroxid;-1;Hydroxid
+(OH);Hydroxid;-1;Hydroxid
