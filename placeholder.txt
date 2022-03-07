@@ -1,0 +1,9 @@
+F;Fluor;-1;Fluorid
+Cl;Chlor;-1;Chlorid
+Br;Brom;-1;Bromid
+I;Jod;-1;Jodid
+O;Kyslík;-2;Oxid
+S;Síra;-2;Sirnan
+Se;Selen;-2;Selenid
+N;Dusík;-3;Dusičnan
+(OH);Hydroxid;-1;Hydroxid
