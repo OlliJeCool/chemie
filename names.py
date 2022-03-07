@@ -4,10 +4,9 @@ import re
 bases = lf.LoadOthers()
 roots = lf.LoadRoots()
 endings = lf.LoadEndings()
-_input = input("Enter a fromula or the whole name...  ")
 
 
-def fromNameToFormula():
+def fromNameToFormula(_input):
     output = ""
     tempending = 0
     tempnum = 0
@@ -31,7 +30,7 @@ def fromNameToFormula():
     output += str(int(finalending))+tempshort+str(int(finalnum))
     print(output)
 
-def fromFormulaToName():
+def fromFormulaToName(_input):
         for reg in lf.loadRegex():
             if re.match(reg["reg"], _input):
                 if reg["num"] != 1:
@@ -84,19 +83,15 @@ def fromFormulaToName():
                         nums.insert(0,int(temp[1]))
                         nums.insert(1,int(temp[3]))
                         nums.insert(2,int(temp[5]))
-                        return nums
                     elif temp[1].isnumeric and temp[3].isnumeric():
                         nums.insert(0,int(temp[1]))
                         nums.insert(1,int(temp[3]))
                         nums.insert(2,1)
-                        return nums
                     elif temp[1].isnumeric() and temp[4].isnumeric():
                         nums.insert(0,int(temp[1]))
                         nums.insert(1,1)
                         nums.insert(2,int(temp[4]))
-                        return nums
                     elif temp[2].isnumeric() and temp[4].isnumeric():
                         nums.insert(0,1)
                         nums.insert(1,int(temp[2]))
                         nums.insert(2,int(temp[4]))
-                        return nums
